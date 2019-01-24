@@ -1,0 +1,115 @@
+@import 'meyer-reset';
+
+@font-face  {
+  font-family: 'DigitalD';
+  src: url('../Digital Dismay.otf') format('opentype');
+}
+
+//===============
+//  Variables
+//===============
+/*Colors*/
+$red: #c40000;
+$redMedium: #b30202;
+$redDark: #6b0000;
+$redDarker: #480000;
+$base: #d6d2d2;
+$baseLight: lighten($base, 20%);
+$baseDark: darken($base, 30%);
+
+/*Font*/
+$font_digital: 'Led', courier new;
+
+/*Grid*/
+$beginner: (
+  columns: 9,
+  rows: 9
+);
+
+$intermediate: (
+  columns: 16,
+  rows: 16
+);
+
+$expert: (
+  columns: 30,
+  rows: 16
+);
+
+$level-map: ('beginner': $beginner,
+  'intermediate': $intermediate,
+  'expert': $expert);
+
+//===============
+//   Components
+//==============
+/*App*/
+.app {
+  display: grid;
+  grid-template-columns: max-content;
+  grid-template-rows: 60px auto;
+  padding: 20px;
+  //justify-content: center;
+}
+
+.board {
+  width: 189px; //test only
+  height: 189px; //test only
+}
+
+.scoreBoard {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/*Gameboard*/
+@each $level, $value in $level-map {
+  .gameBoard-#{$level} {
+    display: grid;
+    grid-template-columns: repeat(map-get($value, 'columns'), max-content);
+    grid-template-rows: repeat(map-get($value, 'rows'), max-content);
+    div {
+      width: 16px;
+      height: 16px;
+      text-align: center;
+      background: $base;
+      box-sizing: border-box;
+    }
+    .hide {
+      border-top: 2px $baseLight solid;
+      border-left: 2px $baseLight solid;
+      border-bottom: 2px $baseDark solid;
+      border-right: 2px $baseDark solid;
+    }
+    .show {
+      border-bottom: 0.25px $baseDark solid;
+      border-right: 0.25px $baseDark solid
+    }
+  }
+}
+
+/*Timer*/
+@font-face  {
+  font-family: 'DigitalD';
+  src: url('../Digital Dismay.otf') format('opentype');
+}
+
+.scoreBoard-numbers {
+  background: $redDarker;
+  border: 3px inset $redMedium;
+  color: $redDark;
+  position: relative;
+  width: 50px;
+  height: 25px;
+  font-size: 30px;
+  font-family: 'DigitalD', courier new;
+  text-align: center;
+  line-height: 25px;
+  & > div {
+    color: $red;
+    position: absolute;
+    top: 0;
+    width: inherit;
+    height: inherit;
+  }
+}
