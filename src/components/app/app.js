@@ -15,8 +15,8 @@ export default class App extends Component {
 
 		this.state = {
 			isActive: false,
-			minesFlagged: 0
-			 //,gameBoard: this._createBoard(_getConfig(this.state.level)),
+			minesFlagged: 0,
+			gameBoard: this._createBoard(this.config)
 			//tileStates: this.createMatrix(0);
 			//tileStates: //matrix uncl clk flg
 		}
@@ -26,7 +26,7 @@ export default class App extends Component {
 	}
 
     render() {
-			const { isActive, minesFlagged } = this.state;
+			const { isActive, minesFlagged, gameBoard } = this.state;
 
 	    return (
 				<div className='app'>
@@ -40,7 +40,7 @@ export default class App extends Component {
 					<GameBoard
 						onClick={this._toActive}
 						onContextMenu={this._toActive}
-						config={this.config}
+						gameBoard={gameBoard}
 						updateMinesFlagged={this._updateMinesFlagged}/>
 				</div>
 	    );
@@ -67,4 +67,50 @@ export default class App extends Component {
 			this.setState({ minesFlagged: currMinesFlagged})
 		}
 	}
+
+	_createBoard(boardConfig) {
+		const [rows, cols] = [boardConfig.rows, boardConfig.columns];
+    let board = new Array(rows);
+
+  	for(let i = 0; i < rows; i++) {
+  		board[i] = new Array(cols).fill(0)
+  	}
+
+    let count = boardConfig.mines + 1;
+    const randomIndexSet = new Set();
+
+  	while(--count) {
+  		const i = this._randomInteger(rows);
+  		const j = this._randomInteger(cols);
+
+      if(randomIndexSet.has(`${i} ${j}`)){
+        count++;
+      } else {
+        randomIndexSet.add(`${i} ${j}`);
+        board[i][j] = true;
+        board = this._peripheralCount(i, j, board);
+      }
+  	}
+  	return board;
+  }
+
+  _randomInteger(max) {
+	   return Math.floor(Math.random() * max)
+  }
+
+  _peripheralCount(i, j, matrix) {
+  	const lastI = matrix.length - 1;
+  	const lastJ = matrix[0].length - 1;
+
+    if(i != 0 && matrix[i - 1][j] !== true) matrix[i - 1][j]++;
+  	if(i < lastI && matrix[i + 1][j] !== true) matrix[i + 1][j]++;
+  	if(j != 0 && matrix[i][j - 1] !== true) matrix[i][j - 1]++;
+  	if(j < lastJ && matrix[i][j + 1] !== true) matrix[i][j + 1]++;
+  	if(i != 0 && j != 0 && matrix[i - 1][j - 1] !== true) matrix[i - 1][j - 1]++;
+  	if(i != 0 && j < lastJ && matrix[i - 1][j + 1] !== true) matrix[i - 1][j + 1]++;
+  	if(i < lastI && j != 0 && matrix[i + 1][j - 1] !== true ) matrix[i + 1][j - 1]++;
+  	if(i <lastI && j < lastJ && matrix[i + 1][j + 1] !== true) matrix[i + 1][j + 1]++
+
+  	return matrix;
+  }
 }
