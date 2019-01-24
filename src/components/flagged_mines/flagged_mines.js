@@ -6,8 +6,7 @@ export default class FlaggedMines extends Component {
 	}
 
 	render() {
-		const { level, minesFlagged, config } = this.props;
-		const totalMines = config[level]['mines'];
+		const { minesFlagged, totalMines } = this.props;
 		const mineText = this._toThreeDigStr(totalMines - minesFlagged);
 
 		return (

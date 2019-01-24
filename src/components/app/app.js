@@ -9,7 +9,6 @@ export default class App extends Component {
 
 		this.state = {
 			isActive: false,
-		 	level: 'beginner',
 			minesFlagged: 0
 			 //,gameBoard: this._createBoard(_getConfig(this.state.level)),
 			//tileStates: this.createMatrix(0);
@@ -21,31 +20,18 @@ export default class App extends Component {
 	}
 
     render() {
-			const { isActive, level, minesFlagged } = this.state;
+			const { isActive, minesFlagged } = this.state;
 			const config = {
-	      'beginner' : {
-	          columns: 9,
-	          rows: 9,
-	          mines: 10
-	        },
-	      'intermediate': {
-	          columns: 16,
-	          rows: 16,
-	          mines: 40
-	        },
-	      'expert': {
-	        columns: 30,
-	        rows: 16,
-	        mines: 99
-	      }
-	    }
+        columns: 30,
+        rows: 16,
+        mines: 99
+      }
 
 	    return (
 				<div className='app'>
 					<div className='scoreBoard'>
 						<FlaggedMines
-							level={level}
-							config={config}
+							totalMines={config.mines}
 							minesFlagged={minesFlagged} />
 						<div>🙂</div>
 					 	<Timer isActive={isActive} />
@@ -53,7 +39,6 @@ export default class App extends Component {
 					<GameBoard
 						onClick={this._toActive}
 						onContextMenu={this._toActive}
-						level={level}
 						config={config}
 						updateMinesFlagged={this._updateMinesFlagged}/>
 				</div>

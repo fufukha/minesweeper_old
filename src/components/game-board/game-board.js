@@ -6,19 +6,12 @@ export default class GameBoard extends Component {
     super(props);
 
     this.state = {
-      gameBoard: this._createBoard(this.props.config[this.props.level])
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { level, config } = this.props;
-    if(prevProps.level != level) {
-      setState({ gameBoard: this._createBoard(config[level]) });
+      gameBoard: this._createBoard(this.props.config)
     }
   }
 
   render() {
-    const { onClick, onContextMenu, level, updateMinesFlagged } = this.props;
+    const { onClick, onContextMenu, updateMinesFlagged } = this.props;
     const { gameBoard } = this.state;
     const gameBoardTiles = gameBoard.map(row =>
       row.map(ele => <GameTile
@@ -28,7 +21,7 @@ export default class GameBoard extends Component {
 
     return (
       <div
-        className={'gameBoard-' + level}
+        className={'gameBoard-expert'}
         onClick={onClick}
         onContextMenu={onContextMenu}>
           {gameBoardTiles}
