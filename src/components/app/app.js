@@ -7,6 +7,12 @@ export default class App extends Component {
 	constructor() {
 		super();
 
+		 this.config = {
+			columns: 30,
+			rows: 16,
+			mines: 99
+		}
+
 		this.state = {
 			isActive: false,
 			minesFlagged: 0
@@ -21,17 +27,12 @@ export default class App extends Component {
 
     render() {
 			const { isActive, minesFlagged } = this.state;
-			const config = {
-        columns: 30,
-        rows: 16,
-        mines: 99
-      }
 
 	    return (
 				<div className='app'>
 					<div className='scoreBoard'>
 						<FlaggedMines
-							totalMines={config.mines}
+							totalMines={this.config.mines}
 							minesFlagged={minesFlagged} />
 						<div>🙂</div>
 					 	<Timer isActive={isActive} />
@@ -39,7 +40,7 @@ export default class App extends Component {
 					<GameBoard
 						onClick={this._toActive}
 						onContextMenu={this._toActive}
-						config={config}
+						config={this.config}
 						updateMinesFlagged={this._updateMinesFlagged}/>
 				</div>
 	    );
