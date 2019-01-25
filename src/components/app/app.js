@@ -19,6 +19,7 @@ export default class App extends Component {
 			flags: 0,
 			gameBoard: this._createBoard(this.config),
 			tileStates: this._createMatrix(this.config.rows, this.config.columns, 'hide')
+			//TODO add tileStates: this.createMatrix(0);
 			//tileStates: //matrix uncl clk flg
 		}
 
