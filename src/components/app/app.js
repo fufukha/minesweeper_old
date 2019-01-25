@@ -113,4 +113,33 @@ export default class App extends Component {
 
   	return matrix;
   }
+
+	//Timer Logic
+	_startTimer() {
+    this.setState({ startTime: (new Date()).getTime() });
+
+    if(this.timerId == 0) {
+      this.timerId = setInterval(this._timer, 1000);
+    }
+  }
+
+  _timer() {
+    this.setState({ a: Math.random() }) //trigger render() with a random change
+    if(this._timeLapse() > 999000) this._stopTimer();
+  }
+
+  _stopTimer() {
+    clearInterval(this.timerId);
+  }
+
+  _timeLapse() {
+    return (new Date()).getTime() - this.state.startTime;
+  }
+
+  _resetTimer() {
+    this.setState({
+      startTime: null
+    })
+    this.timerId = 0;
+  }
 }
