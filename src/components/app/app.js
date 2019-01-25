@@ -16,9 +16,9 @@ export default class App extends Component {
 		this.state = {
 			isActive: false,
 			startTime: null,
-			minesFlagged: 0,
 			gameBoard: this._createBoard(this.config)
 			//tileStates: this.createMatrix(0);
+			flags: 0,
 			//tileStates: //matrix uncl clk flg
 		}
 
@@ -26,18 +26,18 @@ export default class App extends Component {
 		this._timer = this._timer.bind(this);
 		this._toActive = this._toActive.bind(this);
 		this._startTimer = this._startTimer.bind(this);
-		this._updateMinesFlagged = this._updateMinesFlagged.bind(this);
+		this._updateFlags = this._updateFlags.bind(this);
 	}
 
   render() {
-		const { minesFlagged,
+		const { flags,
 			gameBoard, startTime } = this.state;
 
     return (
 			<div className='app'>
 				<div className='scoreBoard'>
 					<FlaggedMines
-						minesText={this._toThreeDigStr(this.config.mines - minesFlagged)} />
+						minesText={this._toThreeDigStr(this.config.mines - flags)} />
 					<div>🙂</div>
 				 	<Timer milliseconds={startTime == null ? 0 : this._timeLapse()} />
 				</div>
@@ -45,7 +45,7 @@ export default class App extends Component {
 					onClick={this._toActive}
 					onContextMenu={this._toActive}
 					gameBoard={gameBoard}
-					updateMinesFlagged={this._updateMinesFlagged}/>
+					updateMinesFlagged={this._updateFlags}/>
 			</div>
     );
   }
@@ -64,12 +64,12 @@ export default class App extends Component {
 		return event.target.value();
 	}
 
-	_updateMinesFlagged(n) {
-		const { minesFlagged } = this.state;
-		const currMinesFlagged = minesFlagged + n;
+	_updateFlags(n) {
+		const { flags } = this.state;
+		const currFlags = flags + n;
 
-		if(currMinesFlagged < 1000 && currMinesFlagged > -100) {
-			this.setState({ minesFlagged: currMinesFlagged })
+		if(currFlags < 1000 && currFlags > -100) {
+			this.setState({ flags: currFlags })
 		}
 	}
 
