@@ -46,7 +46,7 @@ export default class App extends Component {
 					onClick={this._toActive}
 					onContextMenu={this._toActive}
 					gameBoard={gameBoard}
-					updateMinesFlagged={this._updateFlags}/>
+					updateFlags={this._updateFlags}/>
 			</div>
     );
   }

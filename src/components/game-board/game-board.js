@@ -7,10 +7,10 @@ export default class GameBoard extends Component {
   }
 
   render() {
-    const { onClick, onContextMenu, updateMinesFlagged, gameBoard } = this.props;
+    const { onClick, onContextMenu, updateFlags, gameBoard } = this.props;
     const gameBoardTiles = gameBoard.map(row =>
       row.map(ele => <GameTile
-        updateMinesFlagged={updateMinesFlagged}
+        onContextMenu={updateFlags}
         value={ele === true ? '💣' : ele} />)
     );
 
