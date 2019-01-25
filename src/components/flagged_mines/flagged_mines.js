@@ -6,21 +6,12 @@ export default class FlaggedMines extends Component {
 	}
 
 	render() {
-		const { minesFlagged, totalMines } = this.props;
-		const mineText = this._toThreeDigStr(totalMines - minesFlagged);
+		const { minesText } = this.props;
 
 		return (
 			<div className='scoreBoard-numbers'>888
-				<div>{mineText}</div>
+				<div>{minesText}</div>
 			</div>
 		);
-	}
-
-	_toThreeDigStr(n) {
-		if(n > -1) {
-			return (n).toString().padStart(3, 0);
-		} else {
-			return `-${(Math.abs(n)).toString().padStart(2, 0)}`;
-		}
 	}
 }
