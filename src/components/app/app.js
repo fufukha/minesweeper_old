@@ -16,9 +16,9 @@ export default class App extends Component {
 		this.state = {
 			isActive: false,
 			startTime: null,
-			gameBoard: this._createBoard(this.config)
-			//tileStates: this.createMatrix(0);
 			flags: 0,
+			gameBoard: this._createBoard(this.config),
+			tileStates: this._createMatrix(this.config.rows, this.config.columns, 'hide')
 			//tileStates: //matrix uncl clk flg
 		}
 
@@ -73,20 +73,26 @@ export default class App extends Component {
 		}
 	}
 
-	_createBoard(boardConfig) {
-		const [rows, cols] = [boardConfig.rows, boardConfig.columns];
-    let board = new Array(rows);
+	//TODO prevent first clicking on bomb
+	_createMatrix(rows, columns, fill) {
+		let matrix = new Array(rows);
 
-  	for(let i = 0; i < rows; i++) {
-  		board[i] = new Array(cols).fill(0)
-  	}
+		for(let i = 0; i < rows; i++) {
+			matrix[i] = new Array(columns).fill(fill)
+		}
+		return matrix;
+	}
+
+	_createBoard(boardConfig) {
+		const [rows, columns] = [boardConfig.rows, boardConfig.columns];
+		let board = this._createMatrix(rows, columns, 0);
 
     let count = boardConfig.mines + 1;
     const randomIndexSet = new Set();
 
   	while(--count) {
   		const i = this._randomInteger(rows);
-  		const j = this._randomInteger(cols);
+  		const j = this._randomInteger(columns);
 
       if(randomIndexSet.has(`${i} ${j}`)){
         count++;
