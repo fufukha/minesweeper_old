@@ -15,13 +15,17 @@ export default class App extends Component {
 
 		this.state = {
 			isActive: false,
+			startTime: null,
 			minesFlagged: 0,
 			gameBoard: this._createBoard(this.config)
 			//tileStates: this.createMatrix(0);
 			//tileStates: //matrix uncl clk flg
 		}
 
+		this.timerId = 0;
+		this._timer = this._timer.bind(this);
 		this._toActive = this._toActive.bind(this);
+		this._startTimer = this._startTimer.bind(this);
 		this._updateMinesFlagged = this._updateMinesFlagged.bind(this);
 	}
 
