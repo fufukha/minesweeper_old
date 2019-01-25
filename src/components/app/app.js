@@ -37,8 +37,7 @@ export default class App extends Component {
 			<div className='app'>
 				<div className='scoreBoard'>
 					<FlaggedMines
-						totalMines={this.config.mines}
-						minesFlagged={minesFlagged} />
+						minesText={this._toThreeDigStr(this.config.mines - minesFlagged)} />
 					<div>🙂</div>
 				 	<Timer milliseconds={startTime == null ? 0 : this._timeLapse()} />
 				</div>
@@ -148,4 +147,13 @@ export default class App extends Component {
     })
     this.timerId = 0;
   }
+
+	//mineText
+	_toThreeDigStr(n) {
+		if(n > -1) {
+			return (n).toString().padStart(3, 0);
+		} else {
+			return `-${(Math.abs(n)).toString().padStart(2, 0)}`;
+		}
+	}
 }
