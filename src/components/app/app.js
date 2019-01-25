@@ -29,31 +29,33 @@ export default class App extends Component {
 		this._updateMinesFlagged = this._updateMinesFlagged.bind(this);
 	}
 
-    render() {
-			const { isActive, minesFlagged, gameBoard } = this.state;
+  render() {
+		const { minesFlagged,
+			gameBoard, startTime } = this.state;
 
-	    return (
-				<div className='app'>
-					<div className='scoreBoard'>
-						<FlaggedMines
-							totalMines={this.config.mines}
-							minesFlagged={minesFlagged} />
-						<div>🙂</div>
-					 	<Timer isActive={isActive} />
-					</div>
-					<GameBoard
-						onClick={this._toActive}
-						onContextMenu={this._toActive}
-						gameBoard={gameBoard}
-						updateMinesFlagged={this._updateMinesFlagged}/>
+    return (
+			<div className='app'>
+				<div className='scoreBoard'>
+					<FlaggedMines
+						totalMines={this.config.mines}
+						minesFlagged={minesFlagged} />
+					<div>🙂</div>
+				 	<Timer milliseconds={startTime == null ? 0 : this._timeLapse()} />
 				</div>
-	    );
-    }
+				<GameBoard
+					onClick={this._toActive}
+					onContextMenu={this._toActive}
+					gameBoard={gameBoard}
+					updateMinesFlagged={this._updateMinesFlagged}/>
+			</div>
+    );
+  }
 
 	_toActive(event) {
+		console.log('inside to active')
 		event.preventDefault();
 		const { isActive } = this.state;
-		this.setState( { isActive: true });
+		this.setState({ isActive: true }, this._startTimer());
 		event.target.removeEventListener('click', this._toActive, false);
 		event.target.removeEventListener('contextmenu', this._toActive, false);
 	}
@@ -68,7 +70,7 @@ export default class App extends Component {
 		const currMinesFlagged = minesFlagged + n;
 
 		if(currMinesFlagged < 1000 && currMinesFlagged > -100) {
-			this.setState({ minesFlagged: currMinesFlagged})
+			this.setState({ minesFlagged: currMinesFlagged })
 		}
 	}
 
