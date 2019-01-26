@@ -29,12 +29,11 @@ export default class App extends Component {
 		this._startTimer = this._startTimer.bind(this);
 		this._updateFlags = this._updateFlags.bind(this);
 		this._setToDisplay = this._setToDisplay.bind(this);
-		this._displayTile = this._displayTile.bind(this);
 		this._setToFlag = this._setToFlag.bind(this);
 	}
 
   render() {
-		const { flags,
+		const { flags, tileStates,
 			gameBoard, startTime } = this.state;
 
     return (
@@ -50,6 +49,7 @@ export default class App extends Component {
 					onContextMenu={this._toActive}
 					gameBoard={gameBoard}
 					setToDisplay={this._setToDisplay}
+					tileStates={tileStates}
 					setToFlag={this._setToFlag}
 					updateFlags={this._updateFlags}/>
 			</div>
@@ -81,19 +81,11 @@ export default class App extends Component {
     event.preventDefault();
 		const { tileStates} = this.state;
 
-		tileStates[i][j] = 'hide';
-
-		this.setState({ tileStates: tileStates }, this._displayTile(event, i, j));
-		event.target.removeEventListener('click', this._leftClick, false);
-		event.target.removeEventListener('contextmenu', this._rightClick, false);
+		if(tileStates[i][j] == 'hide') {
+			tileStates[i][j] = 'display';
+			this.setState({ tileStates: tileStates });
+		}
   }
-
-	_displayTile(event, i, j) {
-		const { gameBoard } = this.state;
-		const tileValue = gameBoard[i][j] === true ? '💣' : gameBoard[i][j];
-		event.target.className = 'show';
-		event.target.innerHTML = tileValue;
-	}
 
 	_setToFlag(event, i, j) {
 		event.preventDefault();
@@ -101,32 +93,19 @@ export default class App extends Component {
 
 		if(tileStates[i][j] == 'hide') {
 			tileStates[i][j] = 'flag';
-			this.setState({ tileStates: tileStates },
-				this._flagTile(event, i, j))
 		} else if (tileStates[i][j] == 'flag') {
 			tileStates[i][j] = 'hide';
-			this.setState({ tileStates: tileStates },
-				this._setToHide(event, i, j));
 		}
+
+		this.setState({ tileStates: tileStates });
+		tileStates[i][j] == 'flag' ? this._setFlagCount(1) : this._setFlagCount(-1);
 		//TODO updateFlags
   }
 
-	_flagTile(event, i, j) {
-		const { gameBoard } = this.state;
-		event.target.innerHTML = '📍';
-	}
-
- 	_setToHide(even, i, j) {
-		const { tileStates } = this.state;
-
-		tileStates[i][j] = 'hide';
-		this.setState({ tileStates: tileStates },
-			this._hideTile(event, i, j))
-	}
-
-	_hideTile(event, i, j) {
-		const { gameBoard } = this.state;
-		event.target.innerHTML = '';
+	_setFlagCount(n) {
+	  const { flags } = this.state;
+		//TODO add conditional
+		this.setState({ flags: flags + n });
 	}
 
 	//TODO prevent first clicking on bomb
