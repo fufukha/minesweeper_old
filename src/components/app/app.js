@@ -30,6 +30,7 @@ export default class App extends Component {
 		this._updateFlags = this._updateFlags.bind(this);
 		this._setToDisplay = this._setToDisplay.bind(this);
 		this._displayTile = this._displayTile.bind(this);
+		this._setToFlag = this._setToFlag.bind(this);
 	}
 
   render() {
@@ -49,13 +50,13 @@ export default class App extends Component {
 					onContextMenu={this._toActive}
 					gameBoard={gameBoard}
 					setToDisplay={this._setToDisplay}
+					setToFlag={this._setToFlag}
 					updateFlags={this._updateFlags}/>
 			</div>
     );
   }
 
 	_toActive(event) {
-		console.log('inside to active')
 		event.preventDefault();
 		const { isActive } = this.state;
 		this.setState({ isActive: true }, this._startTimer());
@@ -78,13 +79,13 @@ export default class App extends Component {
 	}
 
 	//game tiles
-	_setToDisplay(event, index) {
+	_setToDisplay(event, i, j) {
     event.preventDefault();
-		const [i, j] = [index[0], index[1]];
-		const  newTileStates = this.state.tileStates;
+		const { tileStates} = this.state;
 
-		newTileStates[0][1] = 'hide';
-		this.setState({ tileStates: newTileStates }, this._displayTile(event, i, j));
+		tileStates[i][j] = 'hide';
+
+		this.setState({ tileStates: tileStates }, this._displayTile(event, i, j));
 		event.target.removeEventListener('click', this._leftClick, false);
 		event.target.removeEventListener('contextmenu', this._rightClick, false);
   }
@@ -94,6 +95,40 @@ export default class App extends Component {
 		const tileValue = gameBoard[i][j] === true ? '💣' : gameBoard[i][j];
 		event.target.className = 'show';
 		event.target.innerHTML = tileValue;
+	}
+
+	_setToFlag(event, i, j) {
+		event.preventDefault();
+		const { tileStates } = this.state;
+
+		if(tileStates[i][j] == 'hide') {
+			tileStates[i][j] = 'flag';
+			this.setState({ tileStates: tileStates },
+				this._flagTile(event, i, j))
+		} else if (tileStates[i][j] == 'flag') {
+			tileStates[i][j] = 'hide';
+			this.setState({ tileStates: tileStates },
+				this._setToHide(event, i, j));
+		}
+		//TODO updateFlags
+  }
+
+	_flagTile(event, i, j) {
+		const { gameBoard } = this.state;
+		event.target.innerHTML = '📍';
+	}
+
+ 	_setToHide(even, i, j) {
+		const { tileStates } = this.state;
+
+		tileStates[i][j] = 'hide';
+		this.setState({ tileStates: tileStates },
+			this._hideTile(event, i, j))
+	}
+
+	_hideTile(event, i, j) {
+		const { gameBoard } = this.state;
+		event.target.innerHTML = '';
 	}
 
 	//TODO prevent first clicking on bomb
