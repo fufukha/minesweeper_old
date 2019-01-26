@@ -5,11 +5,9 @@ export default class GameTile extends Component {
 		super();
 
     this.state = {
-      isHidden: true,
       isFlagged: false
     }
 
-    this._leftClick = this._leftClick.bind(this);
 		this._rightClick = this._rightClick.bind(this);
 	}
 
@@ -26,25 +24,16 @@ export default class GameTile extends Component {
 
   render() {
     const { value } = this.props;
-    const { isHidden, isFlagged } = this.state;
+    const { isFlagged } = this.state;
 
     return (
       <div
-        className={(isHidden ? 'hide': 'show') + (isFlagged ? ' flag' : '')}
+        className='hide'
         onContextMenu={this._rightClick}
-        onClick={this._leftClick}>
-        {isHidden ? '' : value}
+        onClick={(event) => setToDisplay(event, index)}>
 				{isFlagged ? '📍' : ''}
       </div>
     );
-  }
-
-  _leftClick(event) {
-    event.preventDefault();
-
-		this.setState({ isHidden: false });
-		event.target.removeEventListener('click', this._leftClick, false);
-		event.target.removeEventListener('contextmenu', this._rightClick, false);
   }
 
 	_rightClick(event) {
