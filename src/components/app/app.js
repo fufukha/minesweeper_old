@@ -104,8 +104,7 @@ export default class App extends Component {
 
 	_setFlagCount(n) {
 	  const { flags } = this.state;
-		//TODO add conditional
-		this.setState({ flags: flags + n });
+		if(flags < 1000 && flags > -100) this.setState({ flags: flags + n });
 	}
 
 	//TODO prevent first clicking on bomb
