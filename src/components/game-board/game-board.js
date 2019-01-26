@@ -7,11 +7,13 @@ export default class GameBoard extends Component {
   }
 
   render() {
-    const { onClick, onContextMenu, updateFlags, gameBoard } = this.props;
-    const gameBoardTiles = gameBoard.map(row =>
-      row.map(ele => <GameTile
-        onContextMenu={updateFlags}
-        value={ele === true ? '💣' : ele} />)
+    const { onClick, onContextMenu, updateFlags, gameBoard, setToDisplay } = this.props;
+    const gameBoardTiles = gameBoard.map((row, i) =>
+      row.map((ele, j) =>
+        <GameTile
+        index={[i, j]}
+        setToDisplay={setToDisplay}
+        updateFlags={updateFlags}/>)
     );
 
     return (

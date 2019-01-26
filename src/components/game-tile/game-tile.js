@@ -23,7 +23,7 @@ export default class GameTile extends Component {
 	// }
 
   render() {
-    const { value } = this.props;
+    const { value, index, updateFlags, setToDisplay } = this.props;
     const { isFlagged } = this.state;
 
     return (

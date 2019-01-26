@@ -28,6 +28,8 @@ export default class App extends Component {
 		this._toActive = this._toActive.bind(this);
 		this._startTimer = this._startTimer.bind(this);
 		this._updateFlags = this._updateFlags.bind(this);
+		this._setToDisplay = this._setToDisplay.bind(this);
+		this._displayTile = this._displayTile.bind(this);
 	}
 
   render() {
@@ -46,6 +48,7 @@ export default class App extends Component {
 					onClick={this._toActive}
 					onContextMenu={this._toActive}
 					gameBoard={gameBoard}
+					setToDisplay={this._setToDisplay}
 					updateFlags={this._updateFlags}/>
 			</div>
     );
@@ -72,6 +75,25 @@ export default class App extends Component {
 		if(currFlags < 1000 && currFlags > -100) {
 			this.setState({ flags: currFlags })
 		}
+	}
+
+	//game tiles
+	_setToDisplay(event, index) {
+    event.preventDefault();
+		const [i, j] = [index[0], index[1]];
+		const  newTileStates = this.state.tileStates;
+
+		newTileStates[0][1] = 'hide';
+		this.setState({ tileStates: newTileStates }, this._displayTile(event, i, j));
+		event.target.removeEventListener('click', this._leftClick, false);
+		event.target.removeEventListener('contextmenu', this._rightClick, false);
+  }
+
+	_displayTile(event, i, j) {
+		const { gameBoard } = this.state;
+		const tileValue = gameBoard[i][j] === true ? '💣' : gameBoard[i][j];
+		event.target.className = 'show';
+		event.target.innerHTML = tileValue;
 	}
 
 	//TODO prevent first clicking on bomb
