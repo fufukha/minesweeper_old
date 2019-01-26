@@ -59,9 +59,7 @@ export default class App extends Component {
 	_toActive(event) {
 		event.preventDefault();
 		const { isActive } = this.state;
-		this.setState({ isActive: true }, this._startTimer());
-		event.target.removeEventListener('click', this._toActive, false);
-		event.target.removeEventListener('contextmenu', this._toActive, false);
+		if(!isActive) this.setState({ isActive: true },this._startTimer());
 	}
 
 	_setLevel(event) {
