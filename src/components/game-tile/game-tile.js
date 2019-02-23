@@ -3,63 +3,24 @@ import React, { Component } from 'react';
 export default class GameTile extends Component {
 	constructor() {
 		super();
-
-    this.state = {
-      isHidden: true,
-      isFlagged: false
-    }
-
-    this._leftClick = this._leftClick.bind(this);
-		this._rightClick = this._rightClick.bind(this);
 	}
 
-	// componentDidUpdate(prevState) {
-	// 	const { updateMinesFlagged } = this.props;
-	//
-	// 	if(prevState.isFlagged && !this.state.isFlagged) {
-	// 		updateMinesFlagged(-1);
-	// 	}
-	// 	if(!prevState.isFlagged && this.state.isFlagged) {
-	// 		updateMinesFlagged(1);
-	// 	}
-	// }
-
   render() {
-    const { value } = this.props;
-    const { isHidden, isFlagged } = this.state;
+    const { value, index, updateFlags, tileState, tileLeftClick,
+			/*setToDisplay,*/ setToFlag } = this.props;
+		const [i, j] = [index[0], index[1]]
 
     return (
       <div
-        className={(isHidden ? 'hide': 'show') + (isFlagged ? ' flag' : '')}
-        onContextMenu={this._rightClick}
-        onClick={this._leftClick}>
-        {isHidden ? '' : value}
-				{isFlagged ? '📍' : ''}
+        className={tileState == 'flag' ? 'hide' : tileState}
+        onContextMenu={(event) => setToFlag(event, i, j)}
+				onClick={(event) => tileLeftClick(event, i, j)}
+        /*onClick={(event) => setToDisplay(event, i, j)}*/>
+				{tileState != 'hide' && (
+					tileState == 'flag' ?
+							'📍' : (value === true ? '💣' : value)
+				)}
       </div>
     );
   }
-
-  _leftClick(event) {
-    event.preventDefault();
-
-		this.setState({ isHidden: false });
-		event.target.removeEventListener('click', this._leftClick, false);
-		event.target.removeEventListener('contextmenu', this._rightClick, false);
-  }
-
-	_rightClick(event) {
-		event.preventDefault();
-		const { updateMinesFlagged } = this.props;
-    const { isFlagged } = this.state;
-
-		this.setState({ isFlagged: !isFlagged });
-
-		if(isFlagged) {
-			updateMinesFlagged(-1);
-			event.target.removeEventListener('click', this._leftClick, false);
-		} else {
-			updateMinesFlagged(1);
-			event.target.addEventListener('click', this._leftClick);
-		}
-	}
 }

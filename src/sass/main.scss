@@ -32,8 +32,10 @@ $intermediate: (
 );
 
 $expert: (
-  columns: 30,
-  rows: 16
+  //columns: 30,
+  //rows: 16
+  columns: 4,
+  rows: 4
 );
 
 $level-map: ('beginner': $beginner,
