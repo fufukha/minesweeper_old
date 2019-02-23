@@ -8,9 +8,9 @@ export default class App extends Component {
 		super();
 
 		 this.config = {
-			columns: 30,
-			rows: 16,
-			mines: 99
+			columns: 4,
+			rows: 4,
+			mines: 4
 		}
 
 		this.state = {
@@ -28,7 +28,8 @@ export default class App extends Component {
 		this._toActive = this._toActive.bind(this);
 		this._startTimer = this._startTimer.bind(this);
 		this._updateFlags = this._updateFlags.bind(this);
-		this._setToDisplay = this._setToDisplay.bind(this);
+		//this._setToDisplay = this._setToDisplay.bind(this);
+		this._tileLeftClick = this._tileLeftClick.bind(this);
 		this._setToFlag = this._setToFlag.bind(this);
 	}
 
@@ -48,13 +49,98 @@ export default class App extends Component {
 					onClick={this._toActive}
 					onContextMenu={this._toActive}
 					gameBoard={gameBoard}
-					setToDisplay={this._setToDisplay}
+					/*setToDisplay={this._setToDisplay}*/
+					tileLeftClick={this._tileLeftClick}
 					tileStates={tileStates}
 					setToFlag={this._setToFlag}
 					updateFlags={this._updateFlags}/>
 			</div>
     );
   }
+
+	componentDidUpdate(prevState) {
+		if(this.state.flags !== prevState.flags) {
+			if(this._isWin()) this._displayWinBoard();
+		}
+	}
+
+	_isMine(i, j) {
+		const { gameBoard } = this.state;
+		return gameBoard[i][j] === true;
+	}
+
+	_isFalseFlag(i, j) {
+		const { tileStates } = this.state;
+		return !this._isMine(i, j) && tileStates[i][j] == 'flag';
+	}
+
+	_isWin() {
+		const { flags, gameBoard, tileStates } = this.state;
+		const [ mines, rows, cols ] = [this.config.mines, this.config.rows, this.config.columns];
+
+		if( flags != mines ) return false;
+		//Same numnber of flags and mines
+		for(let i = 0; i < rows; i++) {
+			for(let j = 0; j < cols; j++) {
+				if(gameBoard[i][j] === true && tileStates[i][j] != 'flag') return false;
+			}
+		}
+
+		return true;
+	}
+
+	_tileLeftClick(event, i, j) {
+		event.preventDefault();
+		if (this._isMine(i, j)) {
+			 this._toInactive();
+			this._displayLostBoard()
+		}
+
+		this._setToDisplay(i, j)
+		console.log(this._isMine(i, j) ? 'lost' : 'still in the game')
+	}
+
+	_displayWinBoard() {
+		console.log('in _displayWinBoard')
+		const { gameBoard, tileStates } = this.state;
+		const [ rows, cols ] = [ this.config.rows, this.config.columns ];
+
+		for(let i = 0; i < rows; i++) {
+			for(let j = 0; j < cols; j++) {
+				gameBoard[i][j] === true?  this._setToFlag(i, j) : this._setToDisplay(i, j)
+			}
+		}
+		this._toInactive();
+		console.log('win')
+	}
+
+	_displayLostBoard() {
+		const { gameBoard, tileStates } = this.state;
+		const [ rows, cols ] = [ this.config.rows, this.config.columns ];
+
+		for(let i = 0; i < rows; i++) {
+			for(let j = 0; j < cols; j++) {
+				if(this._isMine(i,j)) this._setToDisplay(i, j);
+
+				if(this._isFalseFlag(i, j)) {
+					gameBoard[i][j] = '🚫';
+					tileStates[i][j] = 'hide';
+					this.setState({
+						gameBoard: gameBoard,
+						tileStates: tileStates
+					});
+					this._setToDisplay(i, j);
+				}
+			}
+		}
+	}
+
+
+
+	_toInactive() {
+		const { isActive } = this.state;
+		if(isActive) this.setState({ isActive: false }, this._stopTimer());
+	}
 
 	_toActive(event) {
 		event.preventDefault();
@@ -77,8 +163,7 @@ export default class App extends Component {
 	}
 
 	//game tiles
-	_setToDisplay(event, i, j) {
-    event.preventDefault();
+	_setToDisplay(i, j) {
 		const { tileStates} = this.state;
 
 		if(tileStates[i][j] == 'hide') {
@@ -100,6 +185,7 @@ export default class App extends Component {
 		this.setState({ tileStates: tileStates });
 		tileStates[i][j] == 'flag' ? this._setFlagCount(1) : this._setFlagCount(-1);
 		//TODO updateFlags
+
   }
 
 	_setFlagCount(n) {
@@ -107,7 +193,7 @@ export default class App extends Component {
 		if(flags < 1000 && flags > -100) this.setState({ flags: flags + n });
 	}
 
-	//TODO prevent first clicking on bomb
+	//TODO prevent first clicking on mine
 	_createMatrix(rows, columns, fill) {
 		let matrix = new Array(rows);
 

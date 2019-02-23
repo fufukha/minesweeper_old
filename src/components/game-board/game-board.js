@@ -8,16 +8,19 @@ export default class GameBoard extends Component {
 
   render() {
     const { onClick, onContextMenu, updateFlags, gameBoard,
-      setToDisplay, setToFlag, tileStates } = this.props;
+      /*setToDisplay,*/ setToFlag, tileStates, tileLeftClick } = this.props;
     const gameBoardTiles = gameBoard.map((row, i) =>
       row.map((ele, j) =>
         <GameTile
         index={[i, j]}
-        setToDisplay={setToDisplay}
+        key={(i*10) + j}
+        /*setToDisplay={setToDisplay}*/
+        tileLeftClick={tileLeftClick}
         setToFlag={setToFlag}
         tileState={tileStates[i][j]}
         value={gameBoard[i][j]}
-        updateFlags={updateFlags}/>)
+        updateFlags={updateFlags}/>
+      )
     );
 
     return (
